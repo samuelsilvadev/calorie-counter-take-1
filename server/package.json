@@ -1,0 +1,51 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.17.0"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "format": "prettier --write . --loglevel=error",
+    "lint": "eslint . --ext .js",
+    "release": "standard-version"
+  },
+  "devDependencies": {
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.0.0",
+    "husky": "4.3.8",
+    "lint-staged": "^11.2.3",
+    "prettier": "^2.4.1",
+    "standard-version": "^9.3.2"
+  },
+  "prettier": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,md}": [
+      "yarn format"
+    ],
+    "*.js": [
+      "yarn lint"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog",
+      "disableSubjectLowerCase": true
+    }
+  }
+}
