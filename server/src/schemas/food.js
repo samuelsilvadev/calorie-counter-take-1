@@ -24,7 +24,9 @@ const foodDefs = gql`
     dryBeansPeas: Float!
     oils: Float!
     solidFats: Float!
-    alcoholCalories: Float!
+    addedSugars: Float!
+    alcohol: Float!
+    calories: Float!
     saturatedFats: Float!
   }
 `;
