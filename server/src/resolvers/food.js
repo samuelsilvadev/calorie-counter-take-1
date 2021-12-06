@@ -1,6 +1,8 @@
+const { getAllFoodsQuery } = require("../services/allFoodsQuery");
+
 const foodResolvers = {
   Query: {
-    allFoods: () => [],
+    allFoods: getAllFoodsQuery,
   },
 };
 

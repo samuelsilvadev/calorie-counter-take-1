@@ -50,6 +50,7 @@
   },
   "dependencies": {
     "apollo-server": "^3.5.0",
+    "convert-excel-to-json": "^1.7.0",
     "graphql": "^16.0.1"
   }
 }
