@@ -6,6 +6,7 @@ const typeDefs = gql`
 
   type Query {
     allFoods: [Food]
+    foodByName(name: String!): Food
   }
 `;
 
