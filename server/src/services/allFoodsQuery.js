@@ -1,7 +1,7 @@
-const { deserializeFoodCsv } = require("./utils/deserializeFoodCsv");
+const { loadFoodFacade } = require("./loadFoodFacade");
 
 function getAllFoodsQuery() {
-  return deserializeFoodCsv();
+  return loadFoodFacade();
 }
 
 module.exports = { getAllFoodsQuery };

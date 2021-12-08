@@ -1,7 +1,7 @@
-const { deserializeFoodCsv } = require("./utils/deserializeFoodCsv");
+const { loadFoodFacade } = require("./loadFoodFacade");
 
 function getFoodByName(foodName) {
-  const foods = deserializeFoodCsv();
+  const foods = loadFoodFacade();
 
   return foods.find((food) => food.name === foodName);
 }
