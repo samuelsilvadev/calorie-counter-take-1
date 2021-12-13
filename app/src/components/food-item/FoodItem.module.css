@@ -1,0 +1,22 @@
+.wrapper {
+  border: 2px solid #000;
+  padding: 10px;
+}
+
+.article {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  text-transform: uppercase;
+  text-align: center;
+  border: 2px solid #000;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.button:where(:hover, :focus) {
+  background-color: #f2ca1e;
+}
