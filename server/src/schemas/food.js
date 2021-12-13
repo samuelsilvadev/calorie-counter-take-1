@@ -7,7 +7,7 @@ const foodDefs = gql`
     portion: Int!
     portionAmount: Float!
     portionDisplayName: String!
-    factor: Float!
+    factor: Float
     increment: Float!
     multiplier: Float!
     grains: Float!
