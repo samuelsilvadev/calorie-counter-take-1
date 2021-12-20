@@ -18,6 +18,9 @@ const FOOD_BY_NAME_QUERY = gql`
     foodsByName(name: $name) {
       code
       name
+      calories
+      portionAmount
+      portionDisplayName
     }
   }
 `;

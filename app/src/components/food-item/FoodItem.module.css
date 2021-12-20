@@ -4,8 +4,8 @@
 }
 
 .article {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
 }
 
@@ -15,6 +15,8 @@
   border: 2px solid #000;
   cursor: pointer;
   padding: 5px;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
 }
 
 .button:where(:hover, :focus) {
