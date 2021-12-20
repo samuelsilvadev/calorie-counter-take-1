@@ -1,5 +1,6 @@
 const cache = require("memory-cache");
 const { deserializeFoodCsv } = require("./utils/deserializeFoodCsv");
+const { removeDuplicates } = require("./utils/removeDuplicates");
 
 const CACHE_KEY = "__foods__";
 
@@ -11,8 +12,9 @@ function loadFoodFacade() {
   }
 
   const foods = deserializeFoodCsv();
+  const foodsWithoutDuplicates = removeDuplicates(foods);
 
-  cache.put(CACHE_KEY, foods);
+  cache.put(CACHE_KEY, foodsWithoutDuplicates);
 
   return foods;
 }
