@@ -29,6 +29,11 @@ const foodDefs = gql`
     calories: Float!
     saturatedFats: Float!
   }
+
+  type PaginatedFoods {
+    countPages: Int!
+    foods: [Food]
+  }
 `;
 
 module.exports = { foodDefs };

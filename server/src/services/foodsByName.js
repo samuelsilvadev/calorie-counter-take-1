@@ -8,4 +8,17 @@ function getFoodsByName(foodName) {
   );
 }
 
-module.exports = { getFoodsByName };
+function getPaginatedFoodsByName({ foodName, pageSize, pageNumber }) {
+  const foods = getFoodsByName(foodName);
+
+  const countPages = Math.ceil(foods.length / pageSize);
+  const startPoint = (pageNumber - 1) * pageSize;
+  const endpoint = startPoint + pageSize;
+
+  return {
+    countPages,
+    foods: foods.slice(startPoint, endpoint),
+  };
+}
+
+module.exports = { getFoodsByName, getPaginatedFoodsByName };

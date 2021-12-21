@@ -8,6 +8,11 @@ const typeDefs = gql`
     allFoods: [Food]
     foodByName(name: String!): Food
     foodsByName(name: String!): [Food]!
+    paginatedFoodsByName(
+      name: String!
+      pageSize: Int!
+      pageNumber: Int!
+    ): PaginatedFoods
   }
 `;
 
