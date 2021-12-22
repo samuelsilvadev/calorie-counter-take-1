@@ -9,18 +9,32 @@ type SearchForm = {
   foodName: string;
 };
 
-type FoodByNameQueryResponse = {
-  foodsByName: Food[];
+type PaginatedFoodByNameQueryResponse = {
+  foodsByName: {
+    countPages: number;
+    foods: Food[];
+  };
 };
 
-const FOOD_BY_NAME_QUERY = gql`
-  query GetFoodsByName($name: String!) {
-    foodsByName(name: $name) {
-      code
-      name
-      calories
-      portionAmount
-      portionDisplayName
+const PAGINATED_FOOD_BY_NAME_QUERY = gql`
+  query GetPaginatedFoodsByName(
+    $name: String!
+    $pageSize: Int!
+    $pageNumber: Int!
+  ) {
+    foodsByName: paginatedFoodsByName(
+      name: $name
+      pageSize: $pageSize
+      pageNumber: $pageNumber
+    ) {
+      countPages
+      foods {
+        code
+        name
+        calories
+        portionAmount
+        portionDisplayName
+      }
     }
   }
 `;
@@ -32,11 +46,13 @@ function Home() {
 
   const { register, handleSubmit } = useForm<SearchForm>();
 
-  const { data, loading, error } = useQuery<FoodByNameQueryResponse>(
-    FOOD_BY_NAME_QUERY,
+  const { data, loading, error } = useQuery<PaginatedFoodByNameQueryResponse>(
+    PAGINATED_FOOD_BY_NAME_QUERY,
     {
       variables: {
         name: searchableFoodName,
+        pageSize: 25,
+        pageNumber: 1,
       },
     }
   );
@@ -69,8 +85,8 @@ function Home() {
             Search
           </button>
         </form>
-        {!loading && !error && !!data?.foodsByName?.length && (
-          <FoodList foods={data.foodsByName} />
+        {!loading && !error && !!data?.foodsByName?.foods?.length && (
+          <FoodList foods={data.foodsByName.foods} />
         )}
       </main>
     </>
