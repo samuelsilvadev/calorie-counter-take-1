@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Food } from "../../types/food";
 import styles from "./FoodItem.module.css";
 
@@ -14,7 +15,13 @@ function FoodItem({ food }: Props) {
           {food.calories} calories | Serving size: {food.portionAmount}{" "}
           {food.portionDisplayName}
         </h3>
-        <button className={styles.button}>Select</button>
+        <Link
+          className={styles.button}
+          to={`/calculator/${food.code}`}
+          aria-label={`Go to the calculator page of the ${food.name}`}
+        >
+          Select
+        </Link>
       </article>
     </li>
   );
