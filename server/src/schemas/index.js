@@ -6,6 +6,7 @@ const typeDefs = gql`
 
   type Query {
     allFoods: [Food]
+    foodByCode(code: Int!): Food
     foodByName(name: String!): Food
     foodsByName(name: String!): [Food]!
     paginatedFoodsByName(
