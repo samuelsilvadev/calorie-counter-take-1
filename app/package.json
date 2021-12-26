@@ -38,7 +38,8 @@
     "eject": "react-scripts eject",
     "format": "prettier --write . --loglevel=error",
     "lint": "eslint . --ext .tsx,.ts,.js",
-    "release": "standard-version"
+    "release": "standard-version",
+    "check-types": "tsc"
   },
   "eslintConfig": {
     "extends": [
