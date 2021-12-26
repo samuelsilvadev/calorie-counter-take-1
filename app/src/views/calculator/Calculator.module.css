@@ -21,12 +21,19 @@
   padding: 20px;
 }
 
-.button {
-  text-transform: uppercase;
-  text-align: center;
+.back {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  gap: 10px;
+}
+
+.input {
   border: 2px solid #000;
-  cursor: pointer;
-  padding: 5px;
-  grid-column: 2 / 3;
-  grid-row: 1 / 2;
+  height: 50px;
+  padding: 0 10px;
 }

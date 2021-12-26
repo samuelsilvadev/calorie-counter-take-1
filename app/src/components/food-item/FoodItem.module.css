@@ -10,15 +10,6 @@
 }
 
 .button {
-  text-transform: uppercase;
-  text-align: center;
-  border: 2px solid #000;
-  cursor: pointer;
-  padding: 5px;
   grid-column: 2 / 3;
   grid-row: 1 / 2;
-}
-
-.button:where(:hover, :focus) {
-  background-color: #f2ca1e;
 }

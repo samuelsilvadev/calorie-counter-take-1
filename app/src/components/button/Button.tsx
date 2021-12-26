@@ -11,6 +11,7 @@ interface Props {
   className?: string;
   type?: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
   "aria-label"?: string;
+  disabled?: boolean;
 }
 
 function Button({
@@ -19,6 +20,7 @@ function Button({
   as = "button",
   type,
   to,
+  disabled,
   "aria-label": ariaLabel,
 }: Props) {
   const combinedClassName = `${styles.button} ${className}`;
@@ -36,7 +38,12 @@ function Button({
   }
 
   return (
-    <button className={combinedClassName} type={type} aria-label={ariaLabel}>
+    <button
+      className={combinedClassName}
+      type={type}
+      aria-label={ariaLabel}
+      disabled={disabled}
+    >
       {children}
     </button>
   );

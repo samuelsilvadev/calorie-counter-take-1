@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import type { Food } from "../../types/food";
 import FoodList from "../../components/food-list/FoodList";
+import Button from "../../components/button";
 import styles from "./Home.module.css";
 
 type SearchForm = {
@@ -77,13 +78,13 @@ function Home() {
             placeholder="Use * to search all foods"
             {...register("foodName", { required: true })}
           />
-          <button
+          <Button
             className={styles.submitButton}
             type="submit"
             disabled={loading || !!error}
           >
             Search
-          </button>
+          </Button>
         </form>
         {!loading && !error && !!data?.foodsByName?.foods?.length && (
           <FoodList foods={data.foodsByName.foods} />
