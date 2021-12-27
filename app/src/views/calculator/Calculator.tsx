@@ -54,7 +54,11 @@ function Calculator() {
   });
 
   if (!data?.foodByCode) {
-    return <>Loading...</>;
+    return (
+      <div className={styles.wrapper}>
+        <h2 className={styles.content}>Loading...</h2>
+      </div>
+    );
   }
 
   return (
