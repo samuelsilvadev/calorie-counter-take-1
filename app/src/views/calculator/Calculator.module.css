@@ -9,7 +9,6 @@
 }
 
 .content {
-  border: 2px solid #000;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   position: absolute;
@@ -19,6 +18,13 @@
   width: 80%;
   max-width: 500px;
   padding: 20px;
+}
+
+.content,
+.input,
+.foodDetails,
+.calculatedCalories {
+  border: 2px solid #000;
 }
 
 .back {
@@ -33,7 +39,19 @@
 }
 
 .input {
-  border: 2px solid #000;
   height: 50px;
   padding: 0 10px;
+}
+
+.foodDetails,
+.calculatedCalories {
+  padding: 10px;
+}
+
+.foodDetails {
+  margin-bottom: 10px;
+}
+
+.calculatedCalories {
+  margin-top: 10px;
 }
