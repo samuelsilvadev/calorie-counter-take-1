@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import type { Food } from "../../types/food";
@@ -41,26 +41,60 @@ const PAGINATED_FOOD_BY_NAME_QUERY = gql`
 `;
 
 const SEARCH_WILDCARD = "*";
+const INITIAL_PAGE = 1;
+const DEFAULT_PAGE_SIZE = 25;
 
 function Home() {
   const [searchableFoodName, setSearchableFoodName] = useState("");
+  const [pageNumber, setPageNumber] = useState(INITIAL_PAGE);
+  const [cachedFoodsResults, setCachedFoodsResults] = useState<Food[]>([]);
 
   const { register, handleSubmit } = useForm<SearchForm>();
-
   const { data, loading, error } = useQuery<PaginatedFoodByNameQueryResponse>(
     PAGINATED_FOOD_BY_NAME_QUERY,
     {
       variables: {
         name: searchableFoodName,
-        pageSize: 25,
-        pageNumber: 1,
+        pageSize: DEFAULT_PAGE_SIZE,
+        pageNumber,
       },
     }
   );
+  const wasLoading = useRef(loading);
+
+  useEffect(() => {
+    const hasRecentlyFetched = wasLoading.current && !loading;
+
+    if (
+      hasRecentlyFetched &&
+      typeof data?.foodsByName.foods !== "undefined" &&
+      data.foodsByName.foods.length > 0
+    ) {
+      setCachedFoodsResults((previousCachedFoods) => [
+        ...previousCachedFoods,
+        ...data.foodsByName.foods,
+      ]);
+    }
+  }, [data, loading]);
+
+  useEffect(() => {
+    wasLoading.current = loading;
+  }, [loading]);
 
   const onSubmit = handleSubmit(({ foodName }: SearchForm) => {
+    setPageNumber(INITIAL_PAGE);
+    setCachedFoodsResults([]);
     setSearchableFoodName(foodName === SEARCH_WILDCARD ? "" : foodName);
   });
+
+  const handleOnClickToPaginate = () => {
+    setPageNumber(pageNumber + 1);
+  };
+
+  const shouldRenderLoadMoreButton =
+    pageNumber < (data?.foodsByName.countPages ?? INITIAL_PAGE);
+  const shouldRenderFoodList =
+    !loading && !error && !!cachedFoodsResults.length;
 
   return (
     <>
@@ -86,8 +120,18 @@ function Home() {
             Search
           </Button>
         </form>
-        {!loading && !error && !!data?.foodsByName?.foods?.length && (
-          <FoodList foods={data.foodsByName.foods} />
+        {shouldRenderFoodList && (
+          <>
+            <FoodList foods={cachedFoodsResults} />
+            {shouldRenderLoadMoreButton && (
+              <Button
+                className={styles.loadMoreButton}
+                onClick={handleOnClickToPaginate}
+              >
+                Load more
+              </Button>
+            )}
+          </>
         )}
       </main>
     </>
