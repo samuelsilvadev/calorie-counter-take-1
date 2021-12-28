@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, LinkProps } from "react-router-dom";
 import styles from "./Button.module.css";
 
@@ -12,6 +13,9 @@ interface Props {
   type?: React.ButtonHTMLAttributes<HTMLButtonElement>["type"];
   "aria-label"?: string;
   disabled?: boolean;
+  onClick?: (
+    event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => void;
 }
 
 function Button({
@@ -22,6 +26,7 @@ function Button({
   to,
   disabled,
   "aria-label": ariaLabel,
+  onClick,
 }: Props) {
   const combinedClassName = `${styles.button} ${className}`;
 
@@ -31,7 +36,12 @@ function Button({
     }
 
     return (
-      <Link className={combinedClassName} to={to} aria-label={ariaLabel}>
+      <Link
+        className={combinedClassName}
+        to={to}
+        aria-label={ariaLabel}
+        onClick={onClick}
+      >
         {children}
       </Link>
     );
@@ -43,6 +53,7 @@ function Button({
       type={type}
       aria-label={ariaLabel}
       disabled={disabled}
+      onClick={onClick}
     >
       {children}
     </button>
