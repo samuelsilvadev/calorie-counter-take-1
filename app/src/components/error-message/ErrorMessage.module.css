@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.message {
+  border: 2px solid #000;
+  padding: 50px;
+  margin: 0 10px;
+}
