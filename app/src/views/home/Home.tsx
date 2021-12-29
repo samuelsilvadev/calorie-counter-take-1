@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import type { Food } from "../../types/food";
@@ -6,6 +6,8 @@ import FoodList from "../../components/food-list/FoodList";
 import Button from "../../components/button";
 import ErrorMessage from "../../components/error-message";
 import styles from "./Home.module.css";
+
+// TODO: fix scroll behavior
 
 type SearchForm = {
   foodName: string;
@@ -65,35 +67,43 @@ function Home() {
       },
     }
   );
-  const wasLoading = useRef(loading);
 
-  useEffect(() => {
-    const hasRecentlyFetched = wasLoading.current && !loading;
+  const hasTriggeredANewSearch = useRef(true);
+  const hasTriggeredALoadMore = useRef(false);
 
+  useLayoutEffect(() => {
     if (
-      hasRecentlyFetched &&
-      typeof data?.foodsByName.foods !== "undefined" &&
-      data.foodsByName.foods.length > 0
+      hasTriggeredANewSearch.current &&
+      typeof data?.foodsByName.foods !== "undefined"
     ) {
+      const hasTriggeredALoadMoreScoped = hasTriggeredALoadMore.current;
+
       setCachedFoodsResults((previousCachedFoods) => [
-        ...previousCachedFoods,
+        ...(hasTriggeredALoadMoreScoped ? previousCachedFoods : []),
         ...data.foodsByName.foods,
       ]);
-    }
-  }, [data, loading]);
 
-  useEffect(() => {
-    wasLoading.current = loading;
-  }, [loading]);
+      hasTriggeredANewSearch.current = false;
+      hasTriggeredALoadMore.current = false;
+    }
+  }, [data]);
 
   const onSubmit = handleSubmit(({ foodName }: SearchForm) => {
+    if (foodName === searchableFoodName) {
+      return;
+    }
+
     setPageNumber(INITIAL_PAGE);
-    setCachedFoodsResults([]);
-    setSearchableFoodName(foodName === SEARCH_WILDCARD ? "" : foodName);
+    setSearchableFoodName(foodName !== SEARCH_WILDCARD ? foodName : "");
+
+    hasTriggeredANewSearch.current = true;
   });
 
   const handleOnClickToPaginate = () => {
     setPageNumber(pageNumber + 1);
+
+    hasTriggeredANewSearch.current = true;
+    hasTriggeredALoadMore.current = true;
   };
 
   const shouldRenderLoadMoreButton =
@@ -130,7 +140,7 @@ function Home() {
         {errors.foodName && (
           <ErrorMessage
             className={styles.foodNameErrorMessage}
-            message="You need to write some term to make the search happens :D"
+            message="You need to write some term to make the search more assertive :D"
           />
         )}
         {shouldRenderFoodList && (
