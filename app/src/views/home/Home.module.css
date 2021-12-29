@@ -54,3 +54,7 @@
   display: block;
   margin: 10px auto 0;
 }
+
+.foodNameErrorMessage {
+  margin-bottom: 10px;
+}

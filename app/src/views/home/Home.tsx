@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import type { Food } from "../../types/food";
 import FoodList from "../../components/food-list/FoodList";
 import Button from "../../components/button";
+import ErrorMessage from "../../components/error-message";
 import styles from "./Home.module.css";
 
 type SearchForm = {
@@ -49,7 +50,11 @@ function Home() {
   const [pageNumber, setPageNumber] = useState(INITIAL_PAGE);
   const [cachedFoodsResults, setCachedFoodsResults] = useState<Food[]>([]);
 
-  const { register, handleSubmit } = useForm<SearchForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SearchForm>();
   const { data, loading, error } = useQuery<PaginatedFoodByNameQueryResponse>(
     PAGINATED_FOOD_BY_NAME_QUERY,
     {
@@ -95,6 +100,8 @@ function Home() {
     pageNumber < (data?.foodsByName.countPages ?? INITIAL_PAGE);
   const shouldRenderFoodList =
     !loading && !error && !!cachedFoodsResults.length;
+  const shouldRenderEmptyMessage =
+    !loading && !error && !errors.foodName && !cachedFoodsResults.length;
 
   return (
     <>
@@ -120,6 +127,12 @@ function Home() {
             Search
           </Button>
         </form>
+        {errors.foodName && (
+          <ErrorMessage
+            className={styles.foodNameErrorMessage}
+            message="You need to write some term to make the search happens :D"
+          />
+        )}
         {shouldRenderFoodList && (
           <>
             <FoodList foods={cachedFoodsResults} />
@@ -132,6 +145,9 @@ function Home() {
               </Button>
             )}
           </>
+        )}
+        {shouldRenderEmptyMessage && (
+          <ErrorMessage message="No results found, refine the term and try again :D" />
         )}
       </main>
     </>
