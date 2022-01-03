@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import type { Food } from "../../types/food";
@@ -6,8 +6,6 @@ import FoodList from "../../components/food-list/FoodList";
 import Button from "../../components/button";
 import ErrorMessage from "../../components/error-message";
 import styles from "./Home.module.css";
-
-// TODO: fix scroll behavior
 
 type SearchForm = {
   foodName: string;
@@ -70,6 +68,8 @@ function Home() {
 
   const hasTriggeredANewSearch = useRef(true);
   const hasTriggeredALoadMore = useRef(false);
+  const mainRef = useRef<HTMLElement>(null);
+  const previousMainYPosition = useRef<number>(0);
 
   useLayoutEffect(() => {
     if (
@@ -88,6 +88,20 @@ function Home() {
     }
   }, [data]);
 
+  useEffect(() => {
+    mainRef.current?.scrollTo({
+      top: previousMainYPosition.current,
+    });
+  }, [data]);
+
+  const saveMainPosition = () => {
+    previousMainYPosition.current = mainRef.current?.scrollTop ?? 0;
+  };
+
+  const resetMainPosition = () => {
+    previousMainYPosition.current = 0;
+  };
+
   const onSubmit = handleSubmit(({ foodName }: SearchForm) => {
     if (foodName === searchableFoodName) {
       return;
@@ -95,12 +109,14 @@ function Home() {
 
     setPageNumber(INITIAL_PAGE);
     setSearchableFoodName(foodName !== SEARCH_WILDCARD ? foodName : "");
+    resetMainPosition();
 
     hasTriggeredANewSearch.current = true;
   });
 
   const handleOnClickToPaginate = () => {
     setPageNumber(pageNumber + 1);
+    saveMainPosition();
 
     hasTriggeredANewSearch.current = true;
     hasTriggeredALoadMore.current = true;
@@ -119,7 +135,7 @@ function Home() {
         <p className={styles.subtitle}>Diet and weight management</p>
         <h1 className={styles.title}>Calorie Counter</h1>
       </header>
-      <main className={styles.content}>
+      <main ref={mainRef} className={styles.content}>
         <form className={styles.searchForm} onSubmit={onSubmit}>
           <label htmlFor="search-food">Food Name</label>
           <input
