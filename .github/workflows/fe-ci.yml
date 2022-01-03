@@ -1,0 +1,42 @@
+name: FE CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'app/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'app/**'
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run quality checks (ESLint)
+        run: yarn lint
+
+      - name: Run quality checks (Prettier)
+        run: yarn format:ci
+
+      - name: Run quality checks (TypeScript)
+        run: yarn check-types
+
+      - name: Run build
+        run: yarn build
