@@ -37,6 +37,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write . --loglevel=error",
+    "format:ci": "prettier --check .",
     "lint": "eslint . --ext .tsx,.ts,.js",
     "release": "standard-version",
     "check-types": "tsc"
