@@ -15,6 +15,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      package-version: ${{ steps.version.outputs.version }}
     defaults:
       run:
         working-directory: ./app
@@ -25,6 +27,10 @@ jobs:
         with:
           node-version: "14"
           cache: "yarn"
+      
+      - name: Set version as output
+        id: version
+        run: echo "::set-output name=version::$(date +'%Y-%m-%d-%H-%M-%S')-latest"
 
       - name: Install dependencies
         run: yarn
@@ -40,3 +46,30 @@ jobs:
 
       - name: Run build
         run: yarn build
+      
+      - name: Package build for release
+        run:  tar -czvf ${{ steps.version.outputs.version }}.tar.gz ./build
+
+      - name: Upload build package
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.version.outputs.version }}
+          path: ./app/${{ steps.version.outputs.version }}.tar.gz
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ needs.build.outputs.package-version }}
+
+      - name: Extract package
+        run: tar xvzf ./${{ needs.build.outputs.package-version }}.tar.gz
+
+      - name: Upload to S3
+        run: aws s3 sync ./build s3://${{ secrets.FE_AWS_BUCKET }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.FE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.FE_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.FE_AWS_SECRET_DEFAULT_REGION }}
