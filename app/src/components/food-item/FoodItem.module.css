@@ -7,9 +7,19 @@
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
+  column-gap: 10px;
 }
 
 .button {
   grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.favoriteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  grid-column: 3 / 4;
   grid-row: 1 / 2;
 }
