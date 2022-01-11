@@ -14,6 +14,11 @@ const typeDefs = gql`
       pageSize: Int!
       pageNumber: Int!
     ): PaginatedFoods
+    allFavoriteFoodsByUser(userId: Int!): [Food]
+  }
+
+  type Mutation {
+    markFoodAsFavorite(code: Int!, userId: Int!): Food
   }
 `;
 
