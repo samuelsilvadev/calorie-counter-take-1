@@ -19,6 +19,7 @@ const typeDefs = gql`
 
   type Mutation {
     markFoodAsFavorite(code: Int!, userId: Int!): Food
+    unMarkFoodAsFavorite(code: Int!, userId: Int!): Food
   }
 `;
 

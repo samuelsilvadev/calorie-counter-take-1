@@ -11,6 +11,18 @@ type Props = {
   isFavorite: boolean;
 };
 
+type MarkAsFavoriteMutationResponse = {
+  markFoodAsFavorite: {
+    code: number;
+  };
+};
+
+type UnMarkAsFavoriteMutationResponse = {
+  unMarkFoodAsFavorite: {
+    code: number;
+  };
+};
+
 const MARK_AS_FAVORITE_MUTATION = gql`
   mutation MarkAsFavorite($code: Int!, $userId: Int!) {
     markFoodAsFavorite(code: $code, userId: $userId) {
@@ -19,23 +31,30 @@ const MARK_AS_FAVORITE_MUTATION = gql`
   }
 `;
 
+const UN_MARK_AS_FAVORITE_MUTATION = gql`
+  mutation UnMarkFoodAsFavorite($code: Int!, $userId: Int!) {
+    unMarkFoodAsFavorite(code: $code, userId: $userId) {
+      code
+    }
+  }
+`;
+
 const STATIC_USER_ID = 1;
 
 function FoodItem({ food, isFavorite }: Props) {
-  const [markFoodAsFavorite, { loading }] = useMutation(
-    MARK_AS_FAVORITE_MUTATION,
-    {
-      refetchQueries: [
-        {
-          query: FAVORITE_FOODS_BY_USER_ID_QUERY,
-          variables: { userId: STATIC_USER_ID },
-        },
-      ],
-    }
-  );
+  const [toggleFoodAsFavorite, { loading }] = useMutation<
+    UnMarkAsFavoriteMutationResponse | MarkAsFavoriteMutationResponse
+  >(isFavorite ? UN_MARK_AS_FAVORITE_MUTATION : MARK_AS_FAVORITE_MUTATION, {
+    refetchQueries: [
+      {
+        query: FAVORITE_FOODS_BY_USER_ID_QUERY,
+        variables: { userId: STATIC_USER_ID },
+      },
+    ],
+  });
 
   const handleOnMarkAsFavorite = () => {
-    markFoodAsFavorite({
+    toggleFoodAsFavorite({
       variables: {
         code: Number(food.code),
         userId: STATIC_USER_ID,
@@ -62,7 +81,11 @@ function FoodItem({ food, isFavorite }: Props) {
         <Button
           onClick={handleOnMarkAsFavorite}
           className={styles.favoriteButton}
-          aria-label={`Mark ${food.name} as favorite`}
+          aria-label={
+            isFavorite
+              ? `Unmark ${food.name} as favorite`
+              : `Mark ${food.name} as favorite`
+          }
           disabled={loading}
         >
           {isFavorite ? <FilledStar /> : <Star />}

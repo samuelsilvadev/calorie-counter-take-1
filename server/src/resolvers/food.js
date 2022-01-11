@@ -6,6 +6,7 @@ const {
   getPaginatedFoodsByName,
 } = require("../services/foodsByName");
 const { markFoodAsFavorite } = require("../services/markFoodAsFavorite");
+const { unMarkFoodAsFavorite } = require("../services/unMarkFoodAsFavorite");
 const { getFavoriteFoodByUser } = require("../services/getFavoriteFoodsByUser");
 
 const foodResolvers = {
@@ -21,6 +22,8 @@ const foodResolvers = {
   Mutation: {
     markFoodAsFavorite: (_, { code, userId }) =>
       markFoodAsFavorite(code, userId),
+    unMarkFoodAsFavorite: (_, { code, userId }) =>
+      unMarkFoodAsFavorite(code, userId),
   },
 };
 
