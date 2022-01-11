@@ -1,13 +1,48 @@
+import { gql, useMutation } from "@apollo/client";
 import type { Food } from "../../types/food";
+import { FAVORITE_FOODS_BY_USER_ID_QUERY } from "../../views/home/Home";
 import Button from "../button";
+import FilledStar from "../icons/FilledStar";
 import Star from "../icons/Star";
 import styles from "./FoodItem.module.css";
 
 type Props = {
   food: Food;
+  isFavorite: boolean;
 };
 
-function FoodItem({ food }: Props) {
+const MARK_AS_FAVORITE_MUTATION = gql`
+  mutation MarkAsFavorite($code: Int!, $userId: Int!) {
+    markFoodAsFavorite(code: $code, userId: $userId) {
+      code
+    }
+  }
+`;
+
+const STATIC_USER_ID = 1;
+
+function FoodItem({ food, isFavorite }: Props) {
+  const [markFoodAsFavorite, { loading }] = useMutation(
+    MARK_AS_FAVORITE_MUTATION,
+    {
+      refetchQueries: [
+        {
+          query: FAVORITE_FOODS_BY_USER_ID_QUERY,
+          variables: { userId: STATIC_USER_ID },
+        },
+      ],
+    }
+  );
+
+  const handleOnMarkAsFavorite = () => {
+    markFoodAsFavorite({
+      variables: {
+        code: Number(food.code),
+        userId: STATIC_USER_ID,
+      },
+    });
+  };
+
   return (
     <li className={styles.wrapper}>
       <article className={styles.article}>
@@ -25,10 +60,12 @@ function FoodItem({ food }: Props) {
           Select
         </Button>
         <Button
+          onClick={handleOnMarkAsFavorite}
           className={styles.favoriteButton}
           aria-label={`Mark ${food.name} as favorite`}
+          disabled={loading}
         >
-          <Star />
+          {isFavorite ? <FilledStar /> : <Star />}
         </Button>
       </article>
     </li>

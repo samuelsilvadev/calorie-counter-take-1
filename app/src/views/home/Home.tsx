@@ -18,6 +18,10 @@ type PaginatedFoodByNameQueryResponse = {
   };
 };
 
+type FavoriteFoodsByUserQueryResponse = {
+  allFavoriteFoodsByUser: Food[];
+};
+
 const PAGINATED_FOOD_BY_NAME_QUERY = gql`
   query GetPaginatedFoodsByName(
     $name: String!
@@ -41,9 +45,22 @@ const PAGINATED_FOOD_BY_NAME_QUERY = gql`
   }
 `;
 
+export const FAVORITE_FOODS_BY_USER_ID_QUERY = gql`
+  query GetFavoriteFoodsByUser($userId: Int!) {
+    allFavoriteFoodsByUser(userId: $userId) {
+      code
+      name
+      calories
+      portionAmount
+      portionDisplayName
+    }
+  }
+`;
+
 const SEARCH_WILDCARD = "*";
 const INITIAL_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 25;
+const STATIC_USER_ID = 1;
 
 function Home() {
   const [searchableFoodName, setSearchableFoodName] = useState("");
@@ -65,6 +82,15 @@ function Home() {
       },
     }
   );
+  const { data: favoriteFoodsData } =
+    useQuery<FavoriteFoodsByUserQueryResponse>(
+      FAVORITE_FOODS_BY_USER_ID_QUERY,
+      {
+        variables: {
+          userId: STATIC_USER_ID,
+        },
+      }
+    );
 
   const hasTriggeredANewSearch = useRef(true);
   const hasTriggeredALoadMore = useRef(false);
@@ -161,7 +187,10 @@ function Home() {
         )}
         {shouldRenderFoodList && (
           <>
-            <FoodList foods={cachedFoodsResults} />
+            <FoodList
+              foods={cachedFoodsResults}
+              favoriteFoods={favoriteFoodsData?.allFavoriteFoodsByUser ?? []}
+            />
             {shouldRenderLoadMoreButton && (
               <Button
                 className={styles.loadMoreButton}
