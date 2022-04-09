@@ -12,6 +12,7 @@ Application built to manipulate and calculate data related with food, its calori
 - Apollo client
 - React hook form
 - React router dom
+- CSS modules
 
 ## How to start?
 
